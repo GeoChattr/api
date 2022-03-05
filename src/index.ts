@@ -6,6 +6,7 @@ import session from 'express-session'
 import cors from "cors";
 import http from "http";
 import passport from 'passport'
+import { GoogleOAuthStrategy } from "./routes/Auth/GoogleOAuthStrategy";
 
 
 function initializePassport() {
@@ -31,7 +32,7 @@ const port = 4000;
 const name = "GeoChattr";
 
 //Middlewares
-app.use("/api", Test(), GitHubOAuthStrategy());
+app.use("/api", Test(), GitHubOAuthStrategy(), GoogleOAuthStrategy());
 app.use(
   session({
     secret: "secret",

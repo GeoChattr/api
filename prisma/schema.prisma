@@ -19,4 +19,5 @@ model User {
   username       String?
   provider       AuthProvider?
   location       String?
+  email          String?
 }
