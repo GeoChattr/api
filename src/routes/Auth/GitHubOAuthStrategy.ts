@@ -39,6 +39,7 @@ export const GitHubOAuthStrategy = () => {
           location: "Mountain View"    
         };
 
+
         const existingUser = await prisma.user.findFirst({
           where: { username: profile.username },
         });

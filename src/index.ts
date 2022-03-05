@@ -3,21 +3,23 @@ import { Test } from "./routes/Test";
 import { GitHubOAuthStrategy } from "./routes/Auth/GitHubOAuthStrategy";
 import { Server } from "socket.io";
 import session from 'express-session'
+import { prisma } from './db/Database'
 import cors from "cors";
 import http from "http";
 import passport from 'passport'
 import { GoogleOAuthStrategy } from "./routes/Auth/GoogleOAuthStrategy";
+import { User } from "@prisma/client";
 
 
 function initializePassport() {
 
-    passport.serializeUser(async (user: any, cb: any) => {
-      const userData: any = user as any;
+  passport.serializeUser(async (user: any, cb: any) => {
+    const userData: User = user as any;
 
-      cb(null, userData);
-    });
+    cb(null, userData);
+  });
 
-    passport.deserializeUser<string>(async (id, done) => done(null, { id }));
+  passport.deserializeUser<string>(async (id, done) => done(null, { id }));
 }
 
 const app = express();
@@ -32,7 +34,18 @@ const port = 4000;
 const name = "GeoChattr";
 
 //Middlewares
-app.use("/api", Test(), GitHubOAuthStrategy(), GoogleOAuthStrategy());
+app.use(express.json());
+
+//log server requests & request method
+app.use(async (req, res, next) => {
+  console.log(`[${req.method} - ${req.path}]`);
+  res.header("Access-Control-Allow-Origin", "*");
+
+  next();
+});
+
+app.use(cors({ origin: true, credentials: true }));
+
 app.use(
   session({
     secret: "secret",
@@ -46,10 +59,21 @@ app.use(
   })
 );
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use("/api", Test(), GitHubOAuthStrategy(), GoogleOAuthStrategy());
+
+
+
 
 app.get("/", (req, res) => {
   res.json({ success: true, message: `${name} API`, isAuthenticated: req.isAuthenticated(), });
 });
+
+app.get('/user', (req, res) => {
+  res.json(req.user)
+})
 
 io.on("connection", (socket) => {
     console.log(`Socket Connected: ${socket.id}`)
