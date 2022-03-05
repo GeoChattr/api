@@ -1,6 +1,6 @@
 //Import routes
 import { Test } from "../routes/Test";
-import { Socket } from '../routes/Socket'
+// import { Socket } from '../routes/Socket'
 import express, { Application } from "express";
 import dotenv from "dotenv";
 
@@ -19,7 +19,7 @@ export class Server {
     this.registerRoutes();
 
     //Set up websocket
-    Socket(this.app);
+    // Socket(this.app);
 
     dotenv.config();
   }

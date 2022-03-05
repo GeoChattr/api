@@ -1,10 +1,10 @@
-import { Application } from "express";
-import { Server } from "socket.io";
+// import { Application } from "express";
+// import { Server } from "socket.io";
 
-export const Socket = (app) => {
-  const io = new Server(app);
+// export const Socket = (app) => {
+//   const io = new Server(app);
 
-  io.on("connection", (socket) => {
-    console.log("a user connected");
-  });
-};
+//   io.on("connection", (socket) => {
+//     console.log("a user connected");
+//   });
+// };
