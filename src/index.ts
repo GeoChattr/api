@@ -9,7 +9,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: true,
-  }
+  },
 });
 
 const port = 4000;
@@ -23,7 +23,12 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  console.log("user connected");
+
+  socket.on("message", (msg) => {
+    console.log("message: " + msg);
+    io.emit("message", { msg, id: socket.id });
+  });
 });
 
 server.listen(port, () => {
