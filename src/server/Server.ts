@@ -1,12 +1,13 @@
 //Import routes
-import { Test } from '../routes/Test'
+import { Test } from "../routes/Test";
+import { Socket } from '../routes/Socket'
 import express, { Application } from "express";
 import dotenv from "dotenv";
 
 export class Server {
   public app: Application;
-  private name: string = "GeoChattr" 
-  private PORT: number = 3000
+  private name: string = "GeoChattr";
+  private PORT: number = 4000;
 
   public constructor() {
     this.app = express();
@@ -16,6 +17,9 @@ export class Server {
 
     //register server base routes
     this.registerRoutes();
+
+    //Set up websocket
+    Socket(this.app);
 
     dotenv.config();
   }
@@ -48,6 +52,6 @@ export class Server {
       });
     });
 
-    this.app.use("/api", Test())
+    this.app.use("/api", Test());
   }
 }
