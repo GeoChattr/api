@@ -6,6 +6,7 @@ export interface InitialAuthUser {
   profilePicture: string;
   displayName: string;
   username: string;
+  location: string;
   provider?: AuthProvider;
   createdAt?: Date;
   updatedAt?: Date

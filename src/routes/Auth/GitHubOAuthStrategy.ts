@@ -9,6 +9,8 @@ import dotenv from "dotenv";
 import { v4 as uuid } from "uuid";
 import { AuthProvider } from "@prisma/client";
 import { prisma } from '../../db/Database'
+import axios from 'axios'
+
 
 //GitHub Authentication Strategy
 export const GitHubOAuthStrategy = () => {
@@ -34,9 +36,8 @@ export const GitHubOAuthStrategy = () => {
           username: profile.username,
           displayName: profile.displayName,
           profilePicture: profile.photos[0].value,
+          location: "Mountain View"    
         };
-
-
 
         const existingUser = await prisma.user.findFirst({
           where: { username: profile.username },
