@@ -6,17 +6,16 @@ import http from "http";
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: true,
+  }
+});
 
 const port = 4000;
 const name = "GeoChattr";
 
 //Middlewares
-app.use(
-  cors({
-    origin: "*",
-  })
-);
 app.use("/api", Test());
 
 app.get("/", (req, res) => {
