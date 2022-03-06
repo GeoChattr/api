@@ -1,13 +1,10 @@
 import express from "express";
 import { Test } from "./routes/Test";
-import { GitHubOAuthStrategy } from "./routes/Auth/GitHubOAuthStrategy";
 import { Server } from "socket.io";
 import session from "express-session";
-import { prisma } from "./db/Database";
 import cors from "cors";
 import http from "http";
 import passport from "passport";
-import { GoogleOAuthStrategy } from "./routes/Auth/GoogleOAuthStrategy";
 import axios from "axios";
 // import { User } from "@prisma/client";
 
@@ -45,31 +42,12 @@ app.use(async (req, res, next) => {
   next();
 });
 
-app.use(cors({ origin: true, credentials: true }));
-
-app.use(
-  session({
-    secret: "secret",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure: false,
-      maxAge: 24 * 60 * 60 * 1000,
-    },
-  })
-);
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.use("/api", Test(), GitHubOAuthStrategy(), GoogleOAuthStrategy());
+app.use("/api", Test());
 
 app.get("/", (req, res) => {
   res.json({
     success: true,
-    message: `${name} API`,
-    isAuthenticated: req.isAuthenticated(),
+    message: `${name} API`
   });
 });
 
