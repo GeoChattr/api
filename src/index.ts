@@ -67,9 +67,6 @@ app.get("/location", async (req, res) => {
 io.on("connection", async (socket: Socket) => {
   console.log(`Socket Connected: ${socket.id}`);
 
-  //
-  console.log(process.env.GEOLOCATION_API_KEY);
-
   socket.on("locationRoomUpdate", (location) => {
     try {
       io.to(socket.id).emit("locationUpdate", location.city);
@@ -88,7 +85,6 @@ io.on("connection", async (socket: Socket) => {
   // });
 
   socket.on("message", (msg) => {
-    console.log("message: " + msg);
     io.emit("message", { msg, id: socket.id });
   });
 });
