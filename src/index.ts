@@ -39,7 +39,7 @@ const name = "GeoChattr";
 //Middlewares
 app.use(express.json());
 
-//log server requests & request method
+//log server requests and request method
 app.use(async (req, res, next) => {
   console.log(`[${req.method} - ${req.path}]`);
   res.header("Access-Control-Allow-Origin", "*");
