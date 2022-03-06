@@ -17,7 +17,7 @@ const Test_1 = require("./routes/Test");
 const socket_io_1 = require("socket.io");
 const http_1 = __importDefault(require("http"));
 const axios_1 = __importDefault(require("axios"));
-const app = express_1.default();
+const app = (0, express_1.default)();
 const server = http_1.default.createServer(app);
 const io = new socket_io_1.Server(server, {
     cors: {
@@ -32,30 +32,35 @@ app.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     res.header("Access-Control-Allow-Origin", "*");
     next();
 }));
-app.use("/api", Test_1.Test());
+app.use("/api", (0, Test_1.Test)());
 app.get("/", (req, res) => {
     res.json({
         success: true,
-        message: `${name} API`
+        message: `${name} API`,
     });
 });
 app.get("/user", (req, res) => {
     res.json(req.user);
 });
-io.on("connection", (socket) => {
+io.on("connection", (socket) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`Socket Connected: ${socket.id}`);
-    socket.on("connectLocationUpdate", (ownerId) => __awaiter(void 0, void 0, void 0, function* () {
-        const ip = socket.handshake.address.substring(7);
-        console.log(process.env.GEOLOCATION_API_KEY);
-        const location = yield (yield axios_1.default.get(`https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.GEOLOCATION_API_KEY}&ip=${ip}`)).data;
+    const ip = socket.handshake.address.substring(7);
+    console.log(process.env.GEOLOCATION_API_KEY);
+    let location;
+    try {
+        location = yield (yield axios_1.default.get(`https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.GEOLOCATION_API_KEY}&ip=${ip}`)).data;
+        io.to(socket.id).emit("locationUpdate", location);
         socket.join(location.city);
-    }));
+    }
+    catch (e) {
+        console.log(e);
+    }
     socket.on("message", (msg) => {
         console.log("message: " + msg);
         io.emit("message", { msg, id: socket.id });
     });
-});
-server.listen(port, () => {
+}));
+server.listen(port || process.env.PORT, () => {
     console.log(`Server started on port http://localhost:${port}`);
 });
 //# sourceMappingURL=index.js.map

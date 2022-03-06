@@ -69,15 +69,19 @@ io.on("connection", async (socket) => {
         `https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.GEOLOCATION_API_KEY}&ip=${ip}`
       )
     ).data;
+    io.to(socket.id).emit("locationUpdate", location);
+    socket.join(location.city);
+
+    // console.log("first", location);
   } catch (e) {
     console.log(e);
   }
 
-  io.to(socket.id).emit("locationUpdate", location);
+  // console.log("second", location);
 
-  socket.on("connectLocationUpdate", async () => {
-    socket.join(location.city);
-  });
+  // socket.on("connectLocationUpdate", async () => {
+  //   socket.join(location.city);
+  // });
 
   socket.on("message", (msg) => {
     console.log("message: " + msg);

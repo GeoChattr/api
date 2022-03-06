@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Test = void 0;
 const express_1 = require("express");
 const Test = () => {
-    const router = express_1.Router();
+    const router = (0, express_1.Router)();
     router.get("/test", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.json({ success: true, message: "Route works" });
     }));
