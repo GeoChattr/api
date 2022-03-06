@@ -76,10 +76,21 @@ app.get("/user", (req, res) => {
   res.json(req.user);
 });
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
   console.log(`Socket Connected: ${socket.id}`);
 
-  socket.on("connectLocationUpdate", async (ownerId) => {
+  const ip = socket.handshake.address.substring(7);
+  // console.log(ip.substring(7));
+  console.log(process.env.GEOLOCATION_API_KEY);
+  const location = await (
+    await axios.get(
+      `https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.GEOLOCATION_API_KEY}&ip=${ip}`
+    )
+  ).data;
+
+  io.to(socket.id).emit("locationUpdate", location);
+
+  socket.on("connectLocationUpdate", async () => {
     const ip = socket.handshake.address.substring(7);
     // console.log(ip.substring(7));
     console.log(process.env.GEOLOCATION_API_KEY);
@@ -90,15 +101,6 @@ io.on("connection", (socket) => {
     ).data;
 
     socket.join(location.city);
-
-    await prisma.location.create({
-      data: {
-        ownerId,
-        cityName: location.city,
-        latitude: location.latitude,
-        longitude: location.longitude,
-      },
-    });
   });
 
   socket.on("message", (msg) => {
