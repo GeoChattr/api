@@ -18,6 +18,15 @@ model User {
   displayName    String
   username       String?
   provider       AuthProvider?
-  location       String?
+  locations       Location[]
   email          String?
+}
+
+model Location{
+  id String @id @default(uuid())
+  cityName String
+  latitude Int
+  longitude Int
+  ownerId String
+  owner User @relation(fields:[ownerId], references:[id])
 }
