@@ -31,7 +31,11 @@ const io = new Server(server, {
   },
 });
 
-// app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 const port = process.env.PORT || 4000;
 const name = "GeoChattr";
