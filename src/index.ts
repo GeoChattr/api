@@ -47,7 +47,7 @@ app.use("/api", Test());
 app.get("/", (req, res) => {
   res.json({
     success: true,
-    message: `${name} API`
+    message: `${name} API`,
   });
 });
 
@@ -70,15 +70,6 @@ io.on("connection", async (socket) => {
   io.to(socket.id).emit("locationUpdate", location);
 
   socket.on("connectLocationUpdate", async () => {
-    const ip = socket.handshake.address.substring(7);
-    // console.log(ip.substring(7));
-    console.log(process.env.GEOLOCATION_API_KEY);
-    const location = await (
-      await axios.get(
-        `https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.GEOLOCATION_API_KEY}&ip=${ip}`
-      )
-    ).data;
-
     socket.join(location.city);
   });
 
