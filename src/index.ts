@@ -11,16 +11,15 @@ import { GoogleOAuthStrategy } from "./routes/Auth/GoogleOAuthStrategy";
 import { User } from "@prisma/client";
 
 
-function initializePassport() {
+// function initializePassport() {
+//   passport.serializeUser(async (user: any, cb: any) => {
+//     const userData: User = user as any;
 
-  passport.serializeUser(async (user: any, cb: any) => {
-    const userData: User = user as any;
+//     cb(null, userData);
+//   });
 
-    cb(null, userData);
-  });
-
-  passport.deserializeUser<string>(async (id, done) => done(null, { id }));
-}
+//   passport.deserializeUser<string>(async (id, done) => done(null, { id }));
+// }
 
 const app = express();
 const server = http.createServer(app);
@@ -46,34 +45,25 @@ app.use(async (req, res, next) => {
 
 app.use(cors({ origin: true, credentials: true }));
 
-app.use(
-  session({
-    secret: "secret",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure: false,
-      maxAge: 24 * 60 * 60 * 1000,
-    },
-  })
-);
+// app.use(
+//   session({
+//     secret: "secret",
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: {
+//       httpOnly: true,
+//       secure: false,
+//       maxAge: 24 * 60 * 60 * 1000,
+//     },
+//   })
+// );
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.use("/api", Test(), GitHubOAuthStrategy(), GoogleOAuthStrategy());
-
-
-
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 app.get("/", (req, res) => {
   res.json({ success: true, message: `${name} API`, isAuthenticated: req.isAuthenticated(), });
 });
-
-app.get('/user', (req, res) => {
-  res.json(req.user)
-})
 
 io.on("connection", (socket) => {
     console.log(`Socket Connected: ${socket.id}`)
@@ -85,7 +75,7 @@ io.on("connection", (socket) => {
   });
   
 server.listen(port, () => {
-  initializePassport();
+  // initializePassport();
   console.log(`Server started on port http://localhost:${port}`);
 });
 
