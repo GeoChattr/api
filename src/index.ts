@@ -31,6 +31,7 @@ const io = new Server(server, {
   },
 });
 
+//so connection works
 app.use(
   cors({
     origin: "*",
