@@ -6,6 +6,7 @@ import cors from "cors";
 import http from "http";
 import passport from "passport";
 import axios from "axios";
+
 // import { User } from "@prisma/client";
 
 // function initializePassport() {
@@ -61,11 +62,18 @@ io.on("connection", async (socket) => {
   const ip = socket.handshake.address.substring(7);
   // console.log(ip.substring(7));
   console.log(process.env.GEOLOCATION_API_KEY);
-  const location = await (
-    await axios.get(
+  let location;
+      try {
+          location = await (
+          await axios.get(
       `https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.GEOLOCATION_API_KEY}&ip=${ip}`
-    )
-  ).data;
+        )
+            ).data;
+      } catch (e) {
+          console.log(e)
+      }
+    
+
 
   io.to(socket.id).emit("locationUpdate", location);
 
