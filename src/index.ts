@@ -1,11 +1,13 @@
 import express from "express";
 import { Test } from "./routes/Test";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import session from "express-session";
 import cors from "cors";
 import http from "http";
 import passport from "passport";
 import axios from "axios";
+import "dotenv/config";
+import { join } from "path/posix";
 
 // import { User } from "@prisma/client";
 
@@ -29,7 +31,7 @@ const io = new Server(server, {
   },
 });
 
-const port = 4000;
+const port = process.env.PORT || 4000;
 const name = "GeoChattr";
 
 //Middlewares
@@ -56,31 +58,33 @@ app.get("/user", (req, res) => {
   res.json(req.user);
 });
 
-io.on("connection", async (socket) => {
+app.get("/location", async (req, res) => {
+  const { data } = await axios.get("https://geolocation-db.com/json/");
+
+  res.json(data);
+});
+
+io.on("connection", async (socket: Socket) => {
   console.log(`Socket Connected: ${socket.id}`);
 
-  const ip = socket.handshake.address.substring(7);
-  // console.log(ip.substring(7));
-  console.log(process.env.GEOLOCATION_API_KEY);
-  let location: any;
-  try {
-    location = await (
-      await axios.get(
-        `https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.GEOLOCATION_API_KEY}&ip=${ip}`
-      )
-    ).data;
-  } catch (e) {
-    console.log(e);
-  }
-
-  io.to(socket.id).emit("locationUpdate", location);
-
-  socket.on("connectLocationUpdate", async () => {
-    socket.join(location.city);
+  socket.on("locationRoomUpdate", (location) => {
+    try {
+      io.to(socket.id).emit("locationUpdate", location.city);
+      console.log("locationUpdate");
+      socket.join(location.city);
+      // console.log("first", location);
+    } catch (e) {
+      console.log(e);
+    }
   });
 
+  // console.log("second", location);
+
+  // socket.on("connectLocationUpdate", async () => {
+  //   socket.join(location.city);
+  // });
+
   socket.on("message", (msg) => {
-    console.log("message: " + msg);
     io.emit("message", { msg, id: socket.id });
   });
 });
