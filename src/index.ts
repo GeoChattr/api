@@ -62,18 +62,16 @@ io.on("connection", async (socket) => {
   const ip = socket.handshake.address.substring(7);
   // console.log(ip.substring(7));
   console.log(process.env.GEOLOCATION_API_KEY);
-  let location;
-      try {
-          location = await (
-          await axios.get(
-      `https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.GEOLOCATION_API_KEY}&ip=${ip}`
-        )
-            ).data;
-      } catch (e) {
-          console.log(e)
-      }
-    
-
+  let location: any;
+  try {
+    location = await (
+      await axios.get(
+        `https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.GEOLOCATION_API_KEY}&ip=${ip}`
+      )
+    ).data;
+  } catch (e) {
+    console.log(e);
+  }
 
   io.to(socket.id).emit("locationUpdate", location);
 
