@@ -4,8 +4,7 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "start": "node dist/index.js",
-    "ts-start": "ts-node src/index.ts",
+    "start": "ts-node src/index.ts",
     "start:respawn": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "run": "tsc && node dist/index.js",
