@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "start:respawn": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "build": "tsc",
+    "build": "node dist/index.js",
     "run": "node index.js",
     "lint": "prettier --write ."
   },
