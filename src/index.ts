@@ -9,20 +9,6 @@ import axios from "axios";
 import "dotenv/config";
 import { join } from "path/posix";
 
-// import { User } from "@prisma/client";
-
-// function initializePassport() {
-
-// function initializePassport() {
-//   passport.serializeUser(async (user: any, cb: any) => {
-//     const userData: User = user as any;
-
-//     cb(null, userData);
-//   });
-
-//   passport.deserializeUser<string>(async (id, done) => done(null, { id }));
-// }
-
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -75,7 +61,7 @@ io.on("connection", async (socket: Socket) => {
       );
       io.to(socket.id).emit("locationUpdate", location.city);
       console.log("locationUpdate");
-      socket.join(location.city);
+      await socket.join(location.city);
       // console.log("first", location);
     } catch (e) {
       console.log(e);
