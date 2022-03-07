@@ -65,17 +65,14 @@ app.get("/user", (req, res) => {
   res.json(req.user);
 });
 
-app.get("/location", async (req, res) => {
-  const { data } = await axios.get("https://geolocation-db.com/json/");
-
-  res.json(data);
-});
-
 io.on("connection", async (socket: Socket) => {
   console.log(`Socket Connected: ${socket.id}`);
 
-  socket.on("locationRoomUpdate", (location) => {
+  socket.on("locationRoomUpdate", async (ip) => {
     try {
+      const { data: location } = await axios.get(
+        `http://ip-api.com/json/${ip}`
+      );
       io.to(socket.id).emit("locationUpdate", location.city);
       console.log("locationUpdate");
       socket.join(location.city);
