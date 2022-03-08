@@ -75,7 +75,9 @@ io.on("connection", async (socket: Socket) => {
   // });
 
   socket.on("message", (msg) => {
-    io.emit("message", { msg, id: socket.id });
+    let rooms = Array.from(socket.rooms);
+    rooms.shift();
+    io.to(rooms).emit("message", { msg, id: socket.id });
   });
 });
 
